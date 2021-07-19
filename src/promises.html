@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<h1>Promises</h1>
+		<ul>
+			<li>
+				They don't block the main thread. While we wait for their
+				results
+			</li>
+			<li>Promises are used to prevent callback hell</li>
+			<li>Only one failure callback is required.</li>
+			<li>
+				It can only succeed or fail just ONCE. If it fails, it just
+				stops.
+			</li>
+            <li>When a promise is created, it is neither in success or failure. It is pending.</li>
+		</ul>
+		<script>
+			let promise = fetch("../laptop.gif");
+			let promise2 = promise.then((response) => {
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				} else {
+					return response.blob();
+				}
+			});
+			let promise3 = promise2.then((myBlob) => {
+				let objectURL = URL.createObjectURL(myBlob);
+				let image = document.createElement("img");
+				image.src = objectURL;
+				document.body.appendChild(image);
+			});
+			let errorCase = promise3.catch((e) => {
+				console.log(
+					"There has been a problem with your fetch operation: " +
+						e.message
+				);
+			});
+
+			fetch("../laptop.gif")
+				.then((response) => {
+					if (!response.ok) {
+						throw new Error(
+							`HTTP error! status: ${response.status}`
+						);
+					} else {
+						return response.blob();
+					}
+				})
+				.then((myBlob) => {
+					let objectURL = URL.createObjectURL(myBlob);
+					let image = document.createElement("img");
+					image.src = objectURL;
+					document.body.appendChild(image);
+				})
+				.catch((e) => {
+					console.log(
+						"There has been a problem with your fetch operation: " +
+							e.message
+					);
+				});
+		</script>
+	</body>
+</html>
