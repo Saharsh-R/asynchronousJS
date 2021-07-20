@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Target and CurrentTarget</title>
+    <meta name="viewport" content="width=device-width">
+    <style>
+    
+        div{
+            background-color: #bada55;
+            color: #333;
+            padding: 1rem;
+            margin: 1rem;
+        }
+        .red{
+            background-color: red;
+        }
+    </style>
+    <!--  -->
+</head>
+<body>
+    <h1>Stop Propagation</h1>
+    <div id='box'>
+        <button  id='stop'>STOP Prapagation</button>
+    </div>
+    <div id = 'box1'>
+        <button id='happen'>Let it happen</button>
+    </div>
+    <script>
+        let box = document.querySelector('#box')
+        let box1 = document.querySelector('#box1')
+        let button = document.querySelector('#stop')
+        let button1 = document.querySelector('#happen')
+
+        box.addEventListener('click',function (e) {
+            this.classList.toggle("red");
+            console.log(`Currently at ${e.currentTarget} ||| Starting click ${e.target}`)
+        })
+        box1.addEventListener('click',function (e) {
+            this.classList.toggle("red");
+            console.log(`Currently at ${e.currentTarget} ||| Starting click ${e.target}`)
+        })
+
+        button.addEventListener('click', function(e) {
+            e.stopPropagation()
+            this.classList.toggle("red");
+            console.log(`Currently at ${e.currentTarget} ||| Starting click ${e.target}`)
+        })
+
+        button1.addEventListener('click', function(e){
+            this.classList.toggle("red");
+            console.log(`Currently at ${e.currentTarget} ||| Starting click ${e.target}`)
+        })
+
+       
+    </script>
+</body>
+</html>

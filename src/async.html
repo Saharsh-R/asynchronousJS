@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<h1>async</h1>
+		<img src="../laptop.gif" />
+		<ul>
+			<li>Makes a function return a promise.</li>
+		</ul>
+		<script>
+			let hello = async () => {
+				return "Hello";
+			};
+			hello().then((v) => console.log(v));
+			hello().then(console.log);
+
+			async function helloStop() {
+				return (greeting = await Promise.resolve("Hello"));
+			}
+
+			let button = document.createElement("button");
+			button.innerHTML = "SHOW ALERT ASYNC";
+			button.addEventListener("click", () => {
+				helloStop().then(alert);
+			});
+			document.body.appendChild(button);
+
+			// when I inspect it is in different order.
+			async function myFetch() {
+				let coffeeUrl = "https://raw.githubusercontent.com/mdn/learning-area/master/javascript/asynchronous/promises/coffee.jpg";
+				let response = await fetch(coffeeUrl);
+
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
+
+				let myBlob = await response.blob();
+
+				let objectURL = URL.createObjectURL(myBlob);
+				let image = document.createElement("img");
+				image.src = objectURL;
+				document.body.appendChild(image);
+			}
+
+			myFetch().catch((e) => {
+				console.log("There has been a problem with your fetch operation: " + e.message);
+			});
+
+            
+
+            //hybrid way
+
+			async function myFetchTea() {
+                let url2 = "https://raw.githubusercontent.com/mdn/learning-area/master/javascript/asynchronous/promises/tea.jpg";
+				let response = await fetch(url2);
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
+				return await response.blob();
+			}
+
+			myFetchTea()
+				.then((blob) => {
+					let objectURL = URL.createObjectURL(blob);
+					let image = document.createElement("img");
+					image.src = objectURL;
+					document.body.appendChild(image);
+				})
+				.catch((e) => console.log(e));
+		</script>
+	</body>
+</html>

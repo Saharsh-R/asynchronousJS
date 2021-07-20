@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<script>
+			function timeoutPromise(interval) {
+				return new Promise((resolve, reject) => {
+					setTimeout(function () {
+						resolve("done");
+					}, interval);
+				});
+			}
+
+			async function timeTestSlow() {
+				await timeoutPromise(3000);
+				await timeoutPromise(3000);
+				await timeoutPromise(3000);
+			}
+
+			let slow = document.createElement("button");
+			slow.innerHTML = "slow async await";
+			slow.addEventListener("click", () => {
+				let startTime = Date.now();
+				timeTestSlow().then(() => {
+					let finishTime = Date.now();
+					let timeTaken = finishTime - startTime;
+					alert("Time taken in milliseconds: " + timeTaken);
+				});
+			});
+			document.body.appendChild(slow);
+
+			async function timeTestFast() {
+				const timeoutPromise1 = timeoutPromise(3000);
+				const timeoutPromise2 = timeoutPromise(3000);
+				const timeoutPromise3 = timeoutPromise(3000);
+
+				await timeoutPromise1;
+				await timeoutPromise2;
+				await timeoutPromise3;
+			}
+
+			let fast = document.createElement("button");
+			fast.innerHTML = "fast async await";
+			fast.addEventListener("click", () => {
+				let startTime = Date.now();
+				timeTestFast().then(() => {
+					let finishTime = Date.now();
+					let timeTaken = finishTime - startTime;
+					alert("Time taken in milliseconds: " + timeTaken);
+				});
+			});
+			document.body.appendChild(fast);
+
+			function timeoutPromiseReject(interval) {
+				return new Promise((resolve, reject) => {
+					setTimeout(function () {
+						reject("error");
+					}, interval);
+				});
+			}
+
+			async function timeTest1() {
+				await timeoutPromise(5000);
+				await timeoutPromiseReject(2000);
+				await timeoutPromise(3000);
+			}
+
+			let test1 = document.createElement("button");
+			test1.innerHTML = "await one by one";
+			test1.addEventListener("click", () => {
+				let startTime = Date.now();
+				timeTest1()
+					.then(() => {})
+					.catch((e) => {
+						console.log(e);
+						let finishTime = Date.now();
+						let timeTaken = finishTime - startTime;
+						alert("Time taken in milliseconds: " + timeTaken);
+					});
+			});
+			document.body.appendChild(test1); //In the above example, the error is handled properly, and the alert appears after approximately 7 seconds.
+
+			async function timeTest2() {
+				const timeoutPromiseResolve1 = timeoutPromise(5000);
+				const timeoutPromiseReject2 = timeoutPromiseReject(2000);
+				const timeoutPromiseResolve3 = timeoutPromise(3000);
+
+				await timeoutPromiseResolve1;
+				await timeoutPromiseReject2;
+				await timeoutPromiseResolve3;
+			}
+
+			let test2 = document.createElement("button");
+			test2.innerHTML = "await all at the same time";
+			test2.addEventListener("click", () => {
+				let startTime = Date.now();
+				timeTest2()
+					.then(() => {})
+					.catch((e) => {
+						console.log(e);
+						let finishTime = Date.now();
+						let timeTaken = finishTime - startTime;
+						alert("Time taken in milliseconds: " + timeTaken);
+					});
+			});
+			document.body.appendChild(test2); //In this example, we have an unhandled error in the console (after 2 seconds), and the alert appears after approximately 5 seconds.
+
+			async function timeTest3() {
+				const timeoutPromiseResolve1 = timeoutPromise(5000);
+				const timeoutPromiseReject2 = timeoutPromiseReject(2000);
+				const timeoutPromiseResolve3 = timeoutPromise(3000);
+
+				const results = await Promise.all([timeoutPromiseResolve1, timeoutPromiseReject2, timeoutPromiseResolve3]);
+				return results;
+			}
+
+			let test3 = document.createElement("button");
+			test3.innerHTML = "await error handle with .all";
+			test3.addEventListener("click", () => {
+				let startTime = Date.now();
+				timeTest3()
+					.then(() => {})
+					.catch((e) => {
+						console.log(e);
+						let finishTime = Date.now();
+						let timeTaken = finishTime - startTime;
+						alert("Time taken in milliseconds: " + timeTaken);
+					});
+			});
+			document.body.appendChild(test3); //In this example, the error is handled properly after around 2 seconds and we also see the alert after around 2 seconds.
+		</script>
+	</body>
+</html>
