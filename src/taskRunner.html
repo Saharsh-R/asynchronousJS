@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<script>
+			// Problem Statement:
+			// 1. TaskRunner takes in tasks one by one and executes them one after the other waiting for each task to complete before executing the next
+			// 2. Task as in the example below are asynchronous but donot return a promise or conform to the async/await pattern
+			// 3. Task takes a callback which is exectuted after the task has completed its work.
+
+			// Objective: Implement the class task runner
+			class TaskRunner {
+                constructor(){
+                    this.q = []
+                    this.i = 0
+                    this.running = false
+                }
+				
+				push(task) {
+					// debugger
+                    this.q.push(task)
+                    if (!this.running){
+                        this.running = !this.running
+                        this.run()
+                    }
+				}
+                async run(){
+                    while (this.i < this.q.length) {
+                        let task = this.q[this.i]
+                        await new Promise(resolve => task(resolve))
+                        this.i++
+                    }
+                    this.running = !this.running
+                }
+			}
+
+			// Test Case
+
+			// uncomment the lines below once implementation is complete
+			var taskRunner = new TaskRunner();
+
+			var taskExample = function (done) {
+				console.log("Task Started");
+				setTimeout(() => {
+					console.log("Task Completed");
+					done();
+				}, 500);
+			};
+
+			taskRunner.push(taskExample);
+			taskRunner.push(taskExample);
+			taskRunner.push(taskExample);
+			taskRunner.push(taskExample);
+
+            setTimeout(() => {
+                taskRunner.push(taskExample)
+                taskRunner.push(taskExample)
+            }, 5000);
+		</script>
+	</body>
+</html>
