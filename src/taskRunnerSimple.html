@@ -17,28 +17,23 @@
 			class TaskRunner {
                 constructor(){
                     this.q = []
-                    this.i = 0
-                    this.running = false
+                    this.done = this.done.bind(this) // needed because when we use done inside the function, it loses it's context of this 
+                }
+                done(){
+                    this.q.shift()
+                    if (this.q.length){
+                        this.run()
+                    }
                 }
 				
 				push(task) {
-					// debugger
                     this.q.push(task)
-                    if (!this.running){
-                        this.running = !this.running
+                    if (this.q.length == 1){
                         this.run()
                     }
 				}
-                async run(){
-                    while (this.i < this.q.length) {
-                        let task = this.q[this.i]
-                        await new Promise(resolve => {
-							task(console.log)
-							resolve(1)
-						})
-                        this.i++
-                    }
-                    this.running = !this.running
+                run(){
+                    this.q[0](this.done)
                 }
 			}
 
